@@ -93,7 +93,7 @@
                 <input type="hidden" name="buildIdGenres" value="${builtGenres}" disabled>
 	            <div class="mb-4">
 	                <label class="block text-gray-700">Thể loại (Giữ Ctrl + Click để chọn nhiều)</label>
-	                <select class="w-full p-2 border border-gray-300" name="genres" multiple required>
+	                <select class="w-full p-2 border border-gray-300" name="genres" multiple>
 	                    <c:forEach var="genre" items="${allGenres}">
 	                        <option value="${genre.genreId}">${genre.genreName}</option>
 	                    </c:forEach>

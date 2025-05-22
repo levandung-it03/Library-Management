@@ -23,11 +23,11 @@
                         <form id="loginForm" action="authenticate" method="POST">
                             <div class="form-group">
                                 <label for="email">Tài Khoản:</label>
-                                <input type="text" class="form-control" id="email" name="email" required>
+                                <input type="text" class="form-control" id="email" name="email">
                             </div>
                             <div class="form-group">
                                 <label for="password">Mật Khẩu:</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <input type="password" class="form-control" id="password" name="password">
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Đăng Nhập</button>
                         </form>

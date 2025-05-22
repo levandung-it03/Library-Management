@@ -98,33 +98,33 @@
 					<label class="block text-gray-700">Tên sách</label>
 					<input
 						class="w-full p-2 border border-gray-300" type="text" name="bookName"
-						placeholder="Tên sách" required />
+						placeholder="Tên sách" />
 				</div>
 				<div class="mb-4">
 					<label class="block text-gray-700">Tác giả</label> <input
 						class="w-full p-2 border border-gray-300" type="text"
-						name="authors" placeholder="Các tác giả" required />
+						name="authors" placeholder="Các tác giả" />
 				</div>
 				<div class="mb-4">
 					<label class="block text-gray-700">Mô tả</label>
 					<textarea class="w-full p-2 border border-gray-300"
-						name="description" placeholder="Mô tả" required></textarea>
+						name="description" placeholder="Mô tả"></textarea>
 				</div>
 				<div class="mb-4">
 					<label class="block text-gray-700">Số lượng</label> <input
 						class="w-full p-2 border border-gray-300" type="number"
-						name="availableQuantity" placeholder="Số lượng" min="1" required />
+						name="availableQuantity" placeholder="Số lượng" min="1" />
 				</div>
 
 				<!-- <div class="mb-4">
 					<label class="block text-gray-700">URL ảnh</label> <input
 						class="w-full p-2 border border-gray-300" type="text" name="image"
-						placeholder="URL ảnh" required />
+						placeholder="URL ảnh" />
 				</div> -->
 
 	            <div class="mb-4">
 	                <label class="block text-gray-700">Thể loại (Giữ Ctrl + Click để chọn nhiều)</label>
-	                <select class="w-full p-2 border border-gray-300" name="genres" multiple required>
+	                <select class="w-full p-2 border border-gray-300" name="genres" multiple>
 	                    <c:forEach var="genre" items="${genres}">
 	                        <option value="${genre.genreId}">${genre.genreName}</option>
 	                    </c:forEach>
