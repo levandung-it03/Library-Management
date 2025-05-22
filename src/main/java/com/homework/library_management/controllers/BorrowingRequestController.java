@@ -46,7 +46,7 @@ public class BorrowingRequestController {
     }
 
     @PostMapping("/return-books")
-    public String createBorrowingRequest(@Valid DTO_AboutMembershipCard dto) throws AppException {
+    public String createReturningRequest(@Valid DTO_AboutMembershipCard dto) throws AppException {
         borrowingRequestService.createReturningRequest(dto.getMembershipCard());
         return "redirect:/borrowing-book?" + SUCCESS.getMsg() + "=" + APIHelper.encodeUrlMsg("Trả sách thành công");
     }
