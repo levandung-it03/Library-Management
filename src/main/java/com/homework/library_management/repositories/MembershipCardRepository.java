@@ -14,6 +14,10 @@ public interface MembershipCardRepository extends JpaRepository<MembershipCard, 
     @Query("SELECT c FROM MembershipCard c WHERE c.membershipCard LIKE CONCAT('%', :card, '%')")
     Page<MembershipCard> findAllByMembershipCard(@Param("card") String card, Pageable pageable);
 
-    @Query("SELECT COUNT(c) > 0 FROM MembershipCard c WHERE c.membershipCard = :card AND c.prohibited = 0")
+    @Query("""
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM MembershipCard c WHERE c.membershipCard = :card AND c.prohibited = 0
+        ) THEN true ELSE false END
+    """)
     boolean isValidMembershipCard(@Param("card") String card);
 }

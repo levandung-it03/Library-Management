@@ -1,6 +1,7 @@
 package com.homework.library_management.repositories;
 
 import com.homework.library_management.entities.BookBorrowingRequest;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +30,12 @@ public interface BookBorrowingRequestRepository extends JpaRepository<BookBorrow
         WHERE bbr.borrowingRequest.membershipCard.membershipCard = :membershipCard
     """)
     List<Object[]> findAllHistoriesByMembershipCard(@Param("membershipCard") String membershipCard);
+
+    @Query("""
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM BookBorrowingRequest bbr
+            WHERE bbr.book.bookId = :bookId AND bbr.borrowingRequest.returningStatus = 0
+        ) THEN true ELSE false END
+    """)
+    boolean existsByBookIdAndNotReturnYet(@Param("bookId") Long bookId);
 }

@@ -7,6 +7,7 @@ import com.homework.library_management.entities.BookGenre;
 import com.homework.library_management.entities.Genre;
 import com.homework.library_management.enums.PageEnum;
 import com.homework.library_management.exception.AppException;
+import com.homework.library_management.repositories.BookBorrowingRequestRepository;
 import com.homework.library_management.repositories.BookGenreRepository;
 import com.homework.library_management.repositories.BookRepository;
 import com.homework.library_management.repositories.GenreRepository;
@@ -31,6 +32,8 @@ public class BookService {
     GenreRepository genreRepository;
     BookGenreRepository bookGenreRepository;
     LibrarianService librarianService;
+    private final BookBorrowingRequestRepository bookBorrowingRequestRepository;
+
 
     public void prepareManageBook(HttpServletRequest request, int page, String query) {
         librarianService.attachLibrarianInfo(request);
@@ -88,6 +91,9 @@ public class BookService {
     public void updateBook(DTO_UpdateBookReq request) throws AppException {
         Book updatedBook = bookRepository.findById(request.getBookId())
             .orElseThrow(() -> new AppException("Sách không tồn tại_/manage-book"));
+
+        if (bookBorrowingRequestRepository.existsByBookIdAndNotReturnYet(request.getBookId()))
+            throw new AppException("Sách này đang được mượn nên không thể cập nhật_/manage-book");
 
         var newGenres = genreRepository.findAllById(request.getGenres());
         var newGenresMap = newGenres.stream().collect(Collectors.toMap(Genre::getGenreId, Function.identity()));

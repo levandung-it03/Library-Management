@@ -11,8 +11,10 @@ import java.util.Optional;
 public interface BorrowingRequestRepository extends JpaRepository<BorrowingRequest, Long> {
 
     @Query("""
-        SELECT COUNT(br) > 0 FROM BorrowingRequest br
-        WHERE br.membershipCard.membershipCard = :membershipCard AND br.returningStatus = 0
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM BorrowingRequest br
+            WHERE br.membershipCard.membershipCard = :membershipCard AND br.returningStatus = 0
+        ) THEN true ELSE false END
     """)
     boolean hasMembershipCardNotReturnYet(String membershipCard);
 
