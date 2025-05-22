@@ -37,7 +37,7 @@
 - mã thẻ đã bị cấm thao tác(*)
 - độ dài phải là 6
 ---
-### Thêm sách(10/14) ###
+### Thêm sách(11/15) ###
 ```session```
 - phiên đăng nhập hết hạn
 
@@ -61,7 +61,7 @@
 - ```list<string>``` (required ```list<number>```)
 - ```list<id>``` không hợp lệ (không tồn tại, null)
 ---
-### Cập nhật sách(13/17) ###
+### Cập nhật sách(15/19) ###
 ```session```
 - phiên đăng nhập hết hạn
 
