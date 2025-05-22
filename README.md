@@ -51,6 +51,7 @@
 ```availableQuantity```
 - null
 - string (need number)
+- phải >= 1
 
 ```description```
 - null/empty
@@ -68,6 +69,7 @@
 - null
 - string (required number)
 - id không tồn tại
+- sách đang được mượn nên không thể cập nhật
 
 ```bookName```
 - null/empty
@@ -79,6 +81,7 @@
 ```availableQuantity```
 - null
 - string (need number)
+- phải >= 1
 
 ```description```
 - null/empty
