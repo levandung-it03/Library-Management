@@ -1,5 +1,6 @@
 package com.homework.library_management.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,7 +22,8 @@ public class DTO_AddBookReq {
     @NotNull(message = "Tên các tác giả không hợp lệ_/manage-book")
     String authors;
 
-	@NotNull(message = "Số lượng sách không hợp lệ_/manage-book")
+    @NotNull(message = "Số lượng sách không hợp lệ_/manage-book")
+    @Min(value = 1, message = "Số lượng sách không hợp lệ_/manage-book")
     Integer availableQuantity;
 
     @NotEmpty(message = "Mô tả không hợp lệ_/manage-book")

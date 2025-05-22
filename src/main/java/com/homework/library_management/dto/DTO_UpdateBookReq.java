@@ -24,6 +24,7 @@ public class DTO_UpdateBookReq {
     String authors;
 
 	@NotNull(message = "Số lượng sách không hợp lệ_/manage-book")
+    @Min(value = 1, message = "Số lượng sách không hợp lệ_/manage-book")
     Integer availableQuantity;
 
     @NotEmpty(message = "Mô tả không được rỗng_/manage-book")
