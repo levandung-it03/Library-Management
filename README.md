@@ -1,11 +1,11 @@
 # NEEDED JOBS #
 - Cần thử nghiệm: fake "null" value bằng cách bỏ DOM.element khỏi form.
----
+
 # TESTCASES #
 ## 1. Weird request in server ##
 - JSESSIONID không hợp lệ (gửi bởi IP Address khác -> Có khả năng bị đánh cắp)
 - database đột nhiên bị ngắt: nhảy sang trang lỗi
----
+
 ## 2. Requests from Client ##
 ### Mượn sách(12/14) ###
 ```session```
