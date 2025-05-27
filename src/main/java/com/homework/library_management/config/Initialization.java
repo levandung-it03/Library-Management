@@ -30,26 +30,26 @@ public class Initialization implements CommandLineRunner {
     @Transactional(rollbackOn = RuntimeException.class)
     public void run(String... args) throws Exception {
         if (accountRepository.count() == 0) {
-            var account = accountRepository.save(Account.builder()
-                .email("user@gmail.com")
+            Account account = accountRepository.save(Account.builder()
+                .email("perfecman1107@gmail.com")
                 .password("useruser")
                 .createdTime(LocalDateTime.now())
                 .role(RoleEnum.LIBRARIAN)
                 .active(true)
                 .build());
-            var librarian = librarianRepository.save(Librarian.builder()
+            Librarian librarian = librarianRepository.save(Librarian.builder()
                 .fullName("Lê Văn Dũng")
                 .employeeId("LB13147")
                 .account(account)
                 .build());
-            var genres = genreRepository.saveAll(List.of(
+            List<Genre> genres = genreRepository.saveAll(List.of(
                 Genre.builder().genreName("Trinh thám").build(),
                 Genre.builder().genreName("Mưu trí").build(),
                 Genre.builder().genreName("Hành động").build(),
                 Genre.builder().genreName("Cảm xúc").build(),
                 Genre.builder().genreName("Trẻ em").build()
             ));
-            var books = bookRepository.saveAll(List.of(
+            List<Book> books = bookRepository.saveAll(List.of(
                 Book.builder().bookName("Cuộc đời của Henri")
                     .authors("Trí Dũng, Trần Hải")
                     .availableQuantity(5 - 2)
@@ -86,7 +86,7 @@ public class Initialization implements CommandLineRunner {
                 MembershipCard.builder().membershipCard("ABC130").prohibited(0).build(),
                 MembershipCard.builder().membershipCard("ABC140").prohibited(0).build()
             ));
-            var br = borrowingRequestRepository.save(BorrowingRequest.builder()
+            BorrowingRequest br = borrowingRequestRepository.save(BorrowingRequest.builder()
                 .librarian(librarian)
                 .membershipCard(membershipCardRepository.findById("ABC100").get())
                 .borrowingTime(LocalDateTime.now())

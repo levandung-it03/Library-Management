@@ -23,8 +23,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
-services:
-  cloudinary:
-    cloud-name: "dfaz1oyc1"
-    api-key: "915678887722258"
-    api-secret: "1PPbDrkY7Vp5dz0W6691xXvOYL8"
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: n21dccn021@student.ptithcm.edu.vn
+    password: klze labx jrgh bwen
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true

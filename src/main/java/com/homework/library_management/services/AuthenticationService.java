@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import com.homework.library_management.config.GlobalLogger;
 import com.homework.library_management.dto.DTO_AuthReq;
 
 import com.homework.library_management.exception.AppException;
@@ -20,10 +21,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
+	GlobalLogger logger;
 	AccountRepository accountRepository;
 	LibrarianRepository librarianRepository;
 
 	public void authenticate(DTO_AuthReq dto, HttpServletRequest request) throws AppException {
+		logger.handling(request, "AuthenticationService.authenticate");
 		var account = accountRepository.findByEmail(dto.getEmail())
 			.orElseThrow(() -> new AppException("Email không tồn tại"));
 

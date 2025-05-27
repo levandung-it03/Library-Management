@@ -1,5 +1,6 @@
 package com.homework.library_management.services;
 
+import com.homework.library_management.config.GlobalLogger;
 import com.homework.library_management.dto.DTO_AddBookReq;
 import com.homework.library_management.dto.DTO_UpdateBookReq;
 import com.homework.library_management.entities.Book;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookService {
+    GlobalLogger logger;
     BookRepository bookRepository;
     GenreRepository genreRepository;
     BookGenreRepository bookGenreRepository;
@@ -36,6 +38,7 @@ public class BookService {
 
 
     public void prepareManageBook(HttpServletRequest request, int page, String query) {
+        logger.handling(request, "BookService.prepareManageBook");
         librarianService.attachLibrarianInfo(request);
         page = page < 0 ? 0 : page - 1;
         Page<Book> books = bookRepository.findAllByBookName(query, PageRequest.of(page, PageEnum.SIZE.getSize()));
@@ -49,6 +52,7 @@ public class BookService {
     }
 
     public void showDetailBook(HttpServletRequest request, Long id) throws AppException {
+        logger.handling(request, "BookService.showDetailBook");
         var book = bookRepository.findById(id)
             .orElseThrow(() -> new AppException("Không tìm thấy sách_/manage-book"));
 
@@ -64,19 +68,20 @@ public class BookService {
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public void addBook(@Valid DTO_AddBookReq request) throws AppException {
-        var genres = genreRepository.findAllById(request.getGenres());
-        if (genres.size() != request.getGenres().size())
+    public void addBook(HttpServletRequest request, DTO_AddBookReq dto) throws AppException {
+        logger.handling(request, "BookService.addBook");
+        var genres = genreRepository.findAllById(dto.getGenres());
+        if (genres.size() != dto.getGenres().size())
             throw new AppException("Thể loại không hợp lệ_/manage-book");
 
         Book book;
         try {
             book = bookRepository.save(Book.builder()
-                .bookName(request.getBookName())
-                .availableQuantity(request.getAvailableQuantity())
-                .description(request.getDescription())
+                .bookName(dto.getBookName())
+                .availableQuantity(dto.getAvailableQuantity())
+                .description(dto.getDescription())
                 .imgUrl("https://baokhanhhoa.vn/file/e7837c02857c8ca30185a8c39b582c03/052023/rar_24_20230525114955.jpeg")
-                .authors(request.getAuthors())
+                .authors(dto.getAuthors())
                 .status(1)
                 .build());
         } catch (RuntimeException e) {
@@ -88,25 +93,26 @@ public class BookService {
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public void updateBook(DTO_UpdateBookReq request) throws AppException {
-        Book updatedBook = bookRepository.findById(request.getBookId())
+    public void updateBook(HttpServletRequest request, DTO_UpdateBookReq dto) throws AppException {
+        logger.handling(request, "BookService.updateBook");
+        Book updatedBook = bookRepository.findById(dto.getBookId())
             .orElseThrow(() -> new AppException("Sách không tồn tại_/manage-book"));
 
-        if (bookBorrowingRequestRepository.existsByBookIdAndNotReturnYet(request.getBookId()))
+        if (bookBorrowingRequestRepository.existsByBookIdAndNotReturnYet(dto.getBookId()))
             throw new AppException("Sách này đang được mượn nên không thể cập nhật_/manage-book");
 
-        var newGenres = genreRepository.findAllById(request.getGenres());
+        var newGenres = genreRepository.findAllById(dto.getGenres());
         var newGenresMap = newGenres.stream().collect(Collectors.toMap(Genre::getGenreId, Function.identity()));
-        if (newGenres.size() != request.getGenres().size())
+        if (newGenres.size() != dto.getGenres().size())
             throw new AppException("Thể loại không hợp lệ_/manage-book");
 
         Book newBook;
         try {
-            updatedBook.setBookName(request.getBookName());
-            updatedBook.setAuthors(request.getAuthors());
-            updatedBook.setAvailableQuantity(request.getAvailableQuantity());
-            updatedBook.setDescription(request.getDescription());
-            updatedBook.setStatus(request.getStatus());
+            updatedBook.setBookName(dto.getBookName());
+            updatedBook.setAuthors(dto.getAuthors());
+            updatedBook.setAvailableQuantity(dto.getAvailableQuantity());
+            updatedBook.setDescription(dto.getDescription());
+            updatedBook.setStatus(dto.getStatus());
             newBook = bookRepository.save(updatedBook); //--"save" with an entity has "id" will update it.
         } catch (RuntimeException e) {
             throw new AppException("Tên sách trùng tên với một cuốn khác_/manage-book");

@@ -1,5 +1,6 @@
 package com.homework.library_management.services;
 
+import com.homework.library_management.config.GlobalLogger;
 import com.homework.library_management.dto.DTO_BorrowingBook;
 import com.homework.library_management.dto.DTO_HistoriesResponse;
 import com.homework.library_management.entities.Book;
@@ -26,6 +27,7 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BorrowingRequestService {
     String SEPARATOR = "_\\[separator]_";
+    GlobalLogger logger;
     BookRepository bookRepository;
     LibrarianRepository librarianRepository;
     BorrowingRequestRepository borrowingRequestRepository;
@@ -36,6 +38,7 @@ public class BorrowingRequestService {
     private final BookBorrowingRequestRepository bookBorrowingRequestRepository;
 
     public void prepareBorrowingBook(HttpServletRequest request, int page, String query, String membershipCard) {
+        logger.handling(request,"BorrowingRequestService.prepareBorrowingBook");
         librarianService.attachLibrarianInfo(request);
         page = page < 0 ? 0 : page - 1;
         Page<Book> books = bookRepository.findAllAvailableBooksByBookName(query,
@@ -70,6 +73,7 @@ public class BorrowingRequestService {
 
     @Transactional(rollbackOn = RuntimeException.class)
     public void createBorrowingRequest(HttpServletRequest request, DTO_BorrowingBook dto) {
+        logger.handling(request,"BorrowingRequestService.createBorrowingRequest");
         if (borrowingRequestRepository.hasMembershipCardNotReturnYet(dto.getMembershipCard()))
             throw new AppException("Thẻ này vẫn còn sách chưa trả nên không thể mượn_/borrowing-book");
 
@@ -117,7 +121,8 @@ public class BorrowingRequestService {
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public void createReturningRequest(String membershipCard) {
+    public void createReturningRequest(HttpServletRequest request, String membershipCard) {
+        logger.handling(request,"BorrowingRequestService.createReturningRequest");
         if (!membershipCardRepository.isValidMembershipCard(membershipCard))
             throw new AppException("Thẻ thư viện không tồn tai, hoặc đang bị cấm thao tác_/borrowing-book");
         var oldBorrowingRequest = borrowingRequestRepository
@@ -135,7 +140,8 @@ public class BorrowingRequestService {
         borrowingRequestRepository.save(oldBorrowingRequest);
     }
 
-    public String getBorrowingHistory(String membershipCard) {
+    public String getBorrowingHistory(HttpServletRequest request, String membershipCard) {
+        logger.handling(request,"BorrowingRequestService.getBorrowingHistory");
         StringBuilder response = new StringBuilder("{\"data\":[");
         var queryResult = bookBorrowingRequestRepository.findAllHistoriesByMembershipCard(membershipCard);
         var resultList = new ArrayList<String>();

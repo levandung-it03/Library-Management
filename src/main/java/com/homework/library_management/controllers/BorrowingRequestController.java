@@ -1,5 +1,6 @@
 package com.homework.library_management.controllers;
 
+import com.homework.library_management.config.GlobalLogger;
 import com.homework.library_management.dto.DTO_AboutMembershipCard;
 import com.homework.library_management.dto.DTO_BorrowingBook;
 
@@ -23,17 +24,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BorrowingRequestController {
+    GlobalLogger logger;
     BorrowingRequestService borrowingRequestService;
 
     @GetMapping("/borrowing-book")
-    public String borrowingBook(
+    public String renderBorrowingBook(
         @RequestParam(name = "currentPage", required = false, defaultValue = "1") int page,
         @RequestParam(name = "query", required = false, defaultValue = "") String query,
         @RequestParam(name = "returningMembershipCard", required = false, defaultValue = "") String membershipCard,
         HttpServletRequest request) {
         try {
+            logger.handling(request, "BorrowingRequestController.renderBorrowingBook");
             borrowingRequestService.prepareBorrowingBook(request, page, query, membershipCard);
+            logger.success(request, "`renderBorrowingBook` successfully");
         } catch (AppException e) {
+            logger.error(request, "AppException: %s", e.getMessage());
             request.setAttribute(ERROR.getMsg(), e.getMessage());
         }
         return "book_borrowing";
@@ -41,19 +46,31 @@ public class BorrowingRequestController {
 
     @PostMapping("/create-borrowing-request")
     public String createBorrowingRequest(@Valid DTO_BorrowingBook dto, HttpServletRequest request) throws AppException {
+        logger.handling(request, "BorrowingRequestController.createBorrowingRequest");
         borrowingRequestService.createBorrowingRequest(request, dto);
-        return "redirect:/borrowing-book?" + SUCCESS.getMsg() + "=" + APIHelper.encodeUrlMsg("Cho mượn thành công");
+        var successMsg = "Cho mượn thành công";
+        logger.success(request, successMsg);
+        logger.markRequestToContinueLoggingWhenRedirect(request);
+        return "redirect:/borrowing-book?" + SUCCESS.getMsg() + "=" + APIHelper.encodeUrlMsg(successMsg);
     }
 
     @PostMapping("/return-books")
-    public String createReturningRequest(@Valid DTO_AboutMembershipCard dto) throws AppException {
-        borrowingRequestService.createReturningRequest(dto.getMembershipCard());
-        return "redirect:/borrowing-book?" + SUCCESS.getMsg() + "=" + APIHelper.encodeUrlMsg("Trả sách thành công");
+    public String createReturningRequest(@Valid DTO_AboutMembershipCard dto, HttpServletRequest request)
+        throws AppException {
+        logger.handling(request, "BorrowingRequestController.createReturningRequest");
+        borrowingRequestService.createReturningRequest(request, dto.getMembershipCard());
+        var successMsg = "Trả sách thành công";
+        logger.success(request, successMsg);
+        logger.markRequestToContinueLoggingWhenRedirect(request);
+        return "redirect:/borrowing-book?" + SUCCESS.getMsg() + "=" + APIHelper.encodeUrlMsg(successMsg);
     }
 
     @ResponseBody
     @GetMapping("/get-borrowing-history")
-    public String getBorrowingHistory(@Valid DTO_AboutMembershipCard dto) {
-        return borrowingRequestService.getBorrowingHistory(dto.getMembershipCard());
+    public String renderBorrowingHistory(@Valid DTO_AboutMembershipCard dto, HttpServletRequest request) {
+        logger.handling(request, "BorrowingRequestController.renderBorrowingHistory");
+        var result = borrowingRequestService.getBorrowingHistory(request, dto.getMembershipCard());
+        logger.success(request, "`renderBorrowingHistory` successfully");
+        return result;
     }
 }

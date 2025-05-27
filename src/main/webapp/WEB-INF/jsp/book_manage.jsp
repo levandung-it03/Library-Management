@@ -57,10 +57,8 @@
             <!-- Các số trang -->
             <c:forEach var="i" begin="1" end="${totalPages}">
                 <a href="${pageContext.request.contextPath}/manage-book?currentPage=${i}&query=${query}"
-                   class="p-2 rounded-full w-10 h-10 flex justify-center items-center
-                  ${currentPage == i ? 'bg-blue-500 text-white' : 'bg-gray-100'}">
-                        ${i}
-                </a>
+                	class="p-2 rounded-full w-10 h-10 flex justify-center items-center
+                	${currentPage == i ? 'bg-blue-500 text-white' : 'bg-gray-100'}">${i}</a>
             </c:forEach>
 
             <!-- Nút "Trang sau" -->

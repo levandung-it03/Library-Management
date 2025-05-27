@@ -27,8 +27,9 @@
 				<div class="flex items-center p-5 border border-info rounded-b">
 					<form action="borrowing-book"
 						method="GET" class="flex w-full">
-						<input class="flex-grow p-2 rounded bg-white" placeholder="Nội dung tìm kiếm" type="text" name="query" />
-						<button type="submit" class="bg-blue-600 text-white ml-1 p-3 rounded">
+						<input class="flex-grow p-2 rounded bg-white book-borrowing_search-box"
+							   placeholder="Nội dung tìm kiếm" type="text" name="query" />
+						<button type="submit" class="bg-blue-600 text-white ml-1 p-3 rounded book-borrowing_search-submit-btn">
 							<i class="fas fa-search"></i>
 						</button>
 					</form>
@@ -70,7 +71,7 @@
 			<%-- Danh sách sách --%>
 			<div id="bookList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 				<c:forEach var="book" items="${books}">
-					<div class="block bg-white p-4 rounded shadow book-item"
+					<div class="block bg-white p-4 rounded shadow book-borrowing_book-item"
                         data-book-id="${book.bookId}"
                         data-book-name="${book.bookName}"
                         data-max-quantity="${book.availableQuantity}">
@@ -78,7 +79,7 @@
 							<img alt="Bìa sách ${book.bookName}" class="mb-4" height="200"
 								src="https://www.win-rar.com/fileadmin/images/winrar-archive.png" width="150" />
 						</div>
-						<a class="block text-blue-700 mb-2 text-justify font-bold"
+						<a class="block text-blue-700 mb-2 text-justify font-bold book-borrowing_book-item_book-name"
 							href="detail-book?id=${book.bookId}" title="${book.bookName}">
 							${book.bookName}
 						</a>
@@ -89,9 +90,11 @@
 							<div class="flex items-center justify-between">
 								<span>Số lượng mượn:</span>
 								<div class="flex items-center">
-									<button type="button" class="decrease-btn bg-gray-200 px-2 rounded-l" onclick="decreaseQuantity('${book.bookId}')">-</button>
+									<button type="button" class="book-borrowing_book-item_decrease-book-btn bg-gray-200 px-2 rounded-l"
+											onclick="decreaseQuantity('${book.bookId}')">-</button>
 									<span class="quantity-display px-2 border-t border-b">0/${book.availableQuantity}</span>
-									<button type="button" class="increase-btn bg-gray-200 px-2 rounded-r" onclick="increaseQuantity('${book.bookId}')">+</button>
+									<button type="button" class="book-borrowing_book-item_increase-book-btn bg-gray-200 px-2 rounded-r"
+											onclick="increaseQuantity('${book.bookId}')">+</button>
 								</div>
 							</div>
 						</div>
@@ -130,7 +133,9 @@
 	                	<select name="borrowedBooks" multiple hidden></select>
 						<button type="button" id="cancelBorrowBtn" class="w-full bg-red-600 text-white py-2 px-4 rounded mb-2"
 							onclick="cancelBorrowing()">Huỷ mượn sách</button>
-						<button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded">Xác nhận mượn sách</button>
+						<button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded book-borrowing_create-borrowing-req-btn">
+							Xác nhận mượn sách
+						</button>
 					</form>
 				</div>
 				
@@ -147,7 +152,9 @@
 					<form id="returnForm" action="<%=request.getContextPath()%>/return-books" method="POST">
 						<span id="borrowedBooksToReturn" style="display: none">${serializedBorrowingBooks}</span>
 						<input type="hidden" id="returnMembershipCardHidden" name="membershipCard" value="" />
-						<button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded">Xác nhận trả sách</button>
+						<button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded book-borrowing_create-returning-req-btn">
+							Xác nhận trả sách
+						</button>
 					</form>
 				</div>
 			</div>
@@ -265,7 +272,7 @@
 			// If we were in borrow mode, restore it
 			if (borrowMode) {
 				// Show borrow controls and retrieve books's quantity.
-				document.querySelectorAll("div#bookList div.book-item").forEach(bookTag => {
+				document.querySelectorAll("div#bookList div.book-borrowing_book-item").forEach(bookTag => {
 					// Show book controls
 					bookTag.querySelector("div.borrow-controls").classList.remove("hidden");
 					
@@ -310,7 +317,7 @@
 			currentMembershipCard = "";
 			
 			// Refresh borrow controls
-			document.querySelectorAll("div#bookList div.book-item").forEach(bookTag => {
+			document.querySelectorAll("div#bookList div.book-borrowing_book-item").forEach(bookTag => {
 				bookTag.querySelector("div.borrow-controls").classList.add("hidden");
 
 				const displayedQuantity = bookTag.querySelector(".quantity-display");
@@ -389,7 +396,7 @@
 		
 		// Increase quantity function
 		function increaseQuantity(bookId) {
-			const bookElement = document.querySelector(`.book-item[data-book-id="` + bookId + `"]`);
+			const bookElement = document.querySelector(`.book-borrowing_book-item[data-book-id="` + bookId + `"]`);
 			const maxQuantity = parseInt(bookElement.getAttribute('data-max-quantity'));
 			const quantityElement = bookElement.querySelector('span.quantity-display');
 			const currentValue = parseInt(quantityElement.textContent.split('/')[0]);
@@ -413,7 +420,7 @@
 		
 		// Decrease quantity function
 		function decreaseQuantity(bookId) {
-			const bookElement = document.querySelector(`.book-item[data-book-id="` + bookId + `"]`);
+			const bookElement = document.querySelector(`.book-borrowing_book-item[data-book-id="` + bookId + `"]`);
 			const maxQuantity = parseInt(bookElement.getAttribute('data-max-quantity'));
 			const quantityElement = bookElement.querySelector('span.quantity-display');
 			const currentValue = parseInt(quantityElement.textContent.split('/')[0]);

@@ -14,7 +14,7 @@
 		<a class="text-lg font-bold px-3 py-2 rounded hover:bg-blue-700" href="membership-card-list">Thành viên</a>
 	</div>
 	<div class="flex items-center space-x-2">
-		<span><u><c:out value="${librarian}"/></u></span>
+		<span><u><a href="${pageContext.request.contextPath}/user-info"><c:out value="${librarian}"/></a></u></span>
 		<i class="fas fa-user"></i>
 		<form action="log-out" method="POST">
 			<button type="submit" class="text-lg font-bold px-3 py-2 rounded hover:bg-blue-700" style="margin-left: 20px;">Đăng xuất</button>
@@ -28,8 +28,8 @@
         let hasMessage = false;
 
         // Extract messages using StatusMsgEnum keys
-        const errMsg = urlParams.get("<%= StatusMsgEnum.ERROR.getMsg() %>");
-        const sucMsg = urlParams.get("<%= StatusMsgEnum.SUCCESS.getMsg() %>");
+		const errMsg = urlParams.get("<%= StatusMsgEnum.ERROR.getMsg() %>");
+		const sucMsg = urlParams.get("<%= StatusMsgEnum.SUCCESS.getMsg() %>");
 
         // Show alerts if messages exist
         if (errMsg) {

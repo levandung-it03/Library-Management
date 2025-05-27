@@ -1,5 +1,6 @@
 package com.homework.library_management.services;
 
+import com.homework.library_management.config.GlobalLogger;
 import com.homework.library_management.entities.MembershipCard;
 import com.homework.library_management.exception.AppException;
 import com.homework.library_management.repositories.MembershipCardRepository;
@@ -16,10 +17,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MembershipCardService {
+    GlobalLogger logger;
     MembershipCardRepository membershipCardRepository;
     LibrarianService librarianService;
 
     public void prepareMembershipCardList(HttpServletRequest request, int page, String query) {
+        logger.handling(request, "MembershipCardController.prepareMembershipCardList");
         librarianService.attachLibrarianInfo(request);
         page = page < 0 ? 0 : page - 1;
         Page<MembershipCard> cards = membershipCardRepository.findAllByMembershipCard(query,
@@ -33,7 +36,8 @@ public class MembershipCardService {
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public void toggleMembershipStatus(String membershipCard) throws AppException {
+    public void toggleMembershipStatus(HttpServletRequest request, String membershipCard) throws AppException {
+        logger.handling(request, "MembershipCardController.toggleMembershipStatus");
         var updatedMembershipCard = membershipCardRepository.findById(membershipCard)
             .orElseThrow(() -> new AppException("Mã thẻ không tồn tại_/membership-card-list"));
         updatedMembershipCard.setProhibited(Math.abs(updatedMembershipCard.getProhibited() - 1));
