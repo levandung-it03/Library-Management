@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -119,7 +120,7 @@ public class AccountService {
     }
 
     public String randOTP() {
-        return String.valueOf(System.currentTimeMillis() % 1_000_000);
+        return UUID.randomUUID().toString().substring(0, 6).toUpperCase();
     }
 
     public void changePassword(DTO_ChangePassword dto, HttpServletRequest request) {

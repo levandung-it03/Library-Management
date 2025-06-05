@@ -74,14 +74,14 @@ public class BorrowingRequestService {
     @Transactional(rollbackOn = RuntimeException.class)
     public void createBorrowingRequest(HttpServletRequest request, DTO_BorrowingBook dto) {
         logger.handling(request,"BorrowingRequestService.createBorrowingRequest");
+        var membershipCard = membershipCardRepository.findById(dto.getMembershipCard())
+            .orElseThrow(() -> new AppException("Thẻ thư viện không tồn tại_/borrowing-book"));
         if (borrowingRequestRepository.hasMembershipCardNotReturnYet(dto.getMembershipCard()))
             throw new AppException("Thẻ này vẫn còn sách chưa trả nên không thể mượn_/borrowing-book");
 
         Long librarianId = Long.parseLong(request.getSession().getAttribute("librarianId").toString());
         var librarian = librarianRepository.findById(librarianId)
             .orElseThrow(() -> new AppException("Phiên đăng nhập hết hạn_/borrowing-book"));
-        var membershipCard = membershipCardRepository.findById(dto.getMembershipCard())
-            .orElseThrow(() -> new AppException("Thẻ thư viện không tồn tại_/borrowing-book"));
         if (membershipCard.getProhibited().equals(1))
             throw new AppException("Thẻ thư viện đang bị cấm thao tác_/borrowing-book");
         var borrowingRequest = borrowingRequestRepository.save(BorrowingRequest.builder()
@@ -123,8 +123,10 @@ public class BorrowingRequestService {
     @Transactional(rollbackOn = RuntimeException.class)
     public void createReturningRequest(HttpServletRequest request, String membershipCard) {
         logger.handling(request,"BorrowingRequestService.createReturningRequest");
+        if (!membershipCardRepository.existsById(membershipCard))
+            throw new AppException("Thẻ thư viện không tồn tại_/borrowing-book");
         if (!membershipCardRepository.isValidMembershipCard(membershipCard))
-            throw new AppException("Thẻ thư viện không tồn tai, hoặc đang bị cấm thao tác_/borrowing-book");
+            throw new AppException("Thẻ thư viện đang bị cấm thao tác_/borrowing-book");
         var oldBorrowingRequest = borrowingRequestRepository
             .findCurrentBorrowingRequestOfMembership(membershipCard)
             .orElseThrow(() -> new AppException("Mã thẻ này không còn nợ sách_/borrowing-book"));
@@ -142,6 +144,8 @@ public class BorrowingRequestService {
 
     public String getBorrowingHistory(HttpServletRequest request, String membershipCard) {
         logger.handling(request,"BorrowingRequestService.getBorrowingHistory");
+        if (!membershipCardRepository.existsById(membershipCard))
+            throw new AppException("Thẻ thư viện không tồn tại_/borrowing-book");
         StringBuilder response = new StringBuilder("{\"data\":[");
         var queryResult = bookBorrowingRequestRepository.findAllHistoriesByMembershipCard(membershipCard);
         var resultList = new ArrayList<String>();

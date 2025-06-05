@@ -14,7 +14,6 @@ import com.homework.library_management.repositories.BookRepository;
 import com.homework.library_management.repositories.GenreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -35,7 +34,6 @@ public class BookService {
     BookGenreRepository bookGenreRepository;
     LibrarianService librarianService;
     private final BookBorrowingRequestRepository bookBorrowingRequestRepository;
-
 
     public void prepareManageBook(HttpServletRequest request, int page, String query) {
         logger.handling(request, "BookService.prepareManageBook");

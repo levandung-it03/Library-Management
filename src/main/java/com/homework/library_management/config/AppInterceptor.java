@@ -5,7 +5,6 @@ import com.homework.library_management.exception.AppException;
 import com.homework.library_management.repositories.LibrarianRepository;
 import com.homework.library_management.utils.APIHelper;
 import com.homework.library_management.utils.DateTimeHelper;
-import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
