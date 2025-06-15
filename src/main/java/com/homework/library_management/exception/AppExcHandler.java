@@ -44,7 +44,7 @@ public class AppExcHandler {
         MethodArgumentNotValidException ex) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         String[] extractedExc = ex.getMessage().split(";");
-        if (extractedExc.length == 6) {
+        if (extractedExc[5].contains("_/") || extractedExc.length == 6) {
             var plainMsg = extractedExc[5];
             var extractedMsg = plainMsg.substring(
                 plainMsg.indexOf("[") + 1,
@@ -66,8 +66,8 @@ public class AppExcHandler {
             logger.error(request, "ValidatorException: %s", errorMsg);
             logger.markRequestToContinueLoggingWhenRedirect(request);
             if (request.getSession().getAttribute("librarianId") == null)
-                return "redirect:/login?" + ERROR.getMsg() + "=" + errorMsg;
-            else return "redirect:/home?" + ERROR.getMsg() + "=" + errorMsg;
+                return "redirect:/login?" + ERROR.getMsg() + "=" + APIHelper.encodeUrlMsg(errorMsg);
+            else return "redirect:/home?" + ERROR.getMsg() + "=" + APIHelper.encodeUrlMsg(errorMsg);
         }
     }
 

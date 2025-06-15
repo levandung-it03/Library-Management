@@ -1,5 +1,6 @@
 package com.homework.library_management.dto;
 
+import com.homework.library_management.dto.annotation.NotEmptyConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class DTO_VerifyEmail {
     @Email(message = "Sai email")
     String email;
 
-    @NotEmpty(message = "Option không được trống")
+    @NotEmptyConstraint(message = "Tên không được rỗng, hoặc chỉ chứa khoảng trắng")
     @NotNull(message = "Option không được trống")
     String option;
 }

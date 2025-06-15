@@ -1,5 +1,6 @@
 package com.homework.library_management.dto;
 
+import com.homework.library_management.dto.annotation.NotEmptyConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,8 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DTO_GenerateForgotPassword {
-    @NotEmpty(message = "Email không được trống")
+
+    @NotEmptyConstraint(message = "Email không được rỗng, hoặc chỉ chứa khoảng trắng")
     @NotNull(message = "Email không hợp lệ")
     @Length(max = 30, message = "Email quá dài")
     @Email(message = "Sai email")

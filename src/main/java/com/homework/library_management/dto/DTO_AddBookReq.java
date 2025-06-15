@@ -1,5 +1,6 @@
 package com.homework.library_management.dto;
 
+import com.homework.library_management.dto.annotation.NotEmptyConstraint;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,11 +15,11 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DTO_AddBookReq {
-    @NotEmpty(message = "Tên sách không hợp lệ_/manage-book")
+    @NotEmptyConstraint(message = "Tên sách không được rỗng, hoặc chỉ chứa khoảng trắng_/manage-book")
     @NotNull(message = "Tên sách không hợp lệ_/manage-book")
     String bookName;
 
-    @NotEmpty(message = "Tên các tác giả không hợp lệ_/manage-book")
+    @NotEmptyConstraint(message = "Tên các tác giả không được rỗng, hoặc chỉ chứa khoảng trắng_/manage-book")
     @NotNull(message = "Tên các tác giả không hợp lệ_/manage-book")
     String authors;
 
@@ -26,7 +27,7 @@ public class DTO_AddBookReq {
     @Min(value = 1, message = "Số lượng sách không hợp lệ_/manage-book")
     Integer availableQuantity;
 
-    @NotEmpty(message = "Mô tả không hợp lệ_/manage-book")
+    @NotEmptyConstraint(message = "Mô tả không được rỗng, hoặc chỉ chứa khoảng trắng_/manage-book")
     @NotNull(message = "Mô tả không hợp lệ_/manage-book")
     String description;
     
