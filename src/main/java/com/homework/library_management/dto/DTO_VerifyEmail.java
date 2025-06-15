@@ -20,7 +20,7 @@ public class DTO_VerifyEmail {
     @Email(message = "Sai email")
     String email;
 
-    @NotEmptyConstraint(message = "Tên không được rỗng, hoặc chỉ chứa khoảng trắng")
+    @NotEmptyConstraint(message = "Option không được rỗng, hoặc chỉ chứa khoảng trắng")
     @NotNull(message = "Option không được trống")
     String option;
 }
