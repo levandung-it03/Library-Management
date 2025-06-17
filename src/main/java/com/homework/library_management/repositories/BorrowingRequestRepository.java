@@ -18,7 +18,7 @@ public interface BorrowingRequestRepository extends JpaRepository<BorrowingReque
     """)
     boolean hasMembershipCardNotReturnYet(String membershipCard);
 
-    @Query("SELECT br FROM BorrowingRequest br WHERE br.membershipCard = :membershipCard AND br.returningStatus = 0")
+    @Query("SELECT br FROM BorrowingRequest br WHERE br.membershipCard.membershipCard = :membershipCard AND br.returningStatus = 0")
     Optional<BorrowingRequest> findCurrentBorrowingRequestOfMembership(String membershipCard);
 
 }

@@ -28,8 +28,9 @@ public class AccountController {
     @PostMapping("/save-log")
     public ResponseEntity<Map> saveLog(HttpServletRequest request, @Valid @RequestBody DTO_ById dto) {
         try {
-            logger.saveLogs(request, dto.getId());
-            return ResponseEntity.ok(Map.of(StatusMsgEnum.SUCCESS.getMsg(), "Lưu thành công các logs"));
+            return ResponseEntity.ok(Map.of(
+                StatusMsgEnum.SUCCESS.getMsg(), "Lưu thành công các logs",
+                "logs", logger.saveLogs(request, dto.getId())));
         } catch (AppException e) {
             return ResponseEntity.badRequest().body(Map.of(StatusMsgEnum.ERROR.getMsg(), e.getMessage()));
         }

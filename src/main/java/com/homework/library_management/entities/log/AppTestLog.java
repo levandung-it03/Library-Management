@@ -19,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 )
 public class AppTestLog {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long logId;
 
     @Column(name = "group_id")

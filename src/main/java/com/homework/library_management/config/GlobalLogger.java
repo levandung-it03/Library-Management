@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Slf4j
@@ -80,18 +81,24 @@ public class GlobalLogger {
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public void saveLogs(HttpServletRequest request, String testId) throws AppException {
+    public ArrayList<AppLog> saveLogs(HttpServletRequest request, String testId) throws AppException {
         try {
             var currentGroupLogId = request.getSession().getAttribute(GROUP_NAME).toString();
             var logs = logStorage.getGroupById(currentGroupLogId);
+            if(logs.isEmpty()) {
+                log.info("[{}]_Logs is empty", Loggers.WEIRD);
+                return new ArrayList<>();
+            }
             appLogRepository.saveAll(logs);
             appTestLogRepository.save(AppTestLog.builder().groupId(currentGroupLogId).testId(testId).build());
 
             log.info("[{}]_Logs saved at {}", Loggers.INFO, DateTimeHelper.localDateTimeToStr(LocalDateTime.now()));
             logStorage.clearGroup(currentGroupLogId);
+            return logs;
         } catch (Exception e) {
             this.logErrorAndClearSession(request);
         }
+        return new ArrayList<>();
     }
 
     private void logErrorAndClearSession(HttpServletRequest request) throws AppException {

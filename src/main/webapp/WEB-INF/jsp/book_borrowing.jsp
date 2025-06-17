@@ -513,7 +513,6 @@
 			const form = e.target;
 			form.querySelector("input#returnMembershipCardHidden").value
 					= document.getElementById("membershipCardInput").value;
-			console.log(form.querySelector("input#returnMembershipCardHidden").value);
 			form.submit();
 		})
 	</script>
