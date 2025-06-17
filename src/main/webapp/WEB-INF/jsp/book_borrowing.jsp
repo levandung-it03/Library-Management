@@ -151,7 +151,7 @@
 					
 					<form id="returnForm" action="<%=request.getContextPath()%>/return-books" method="POST">
 						<span id="borrowedBooksToReturn" style="display: none">${serializedBorrowingBooks}</span>
-						<input type="hidden" id="returnMembershipCardHidden" name="membershipCard" value="" />
+						<input type="text" id="returnMembershipCardHidden" name="membershipCard" value="" style="display: none"/>
 						<button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded book-borrowing_create-returning-req-btn">
 							Xác nhận trả sách
 						</button>
@@ -289,6 +289,7 @@
 				document.getElementById("borrowedBooksSection").classList.add("hidden");
 				
 				// Set card code in hidden field
+				console.log(currentMembershipCard)
 				document.getElementById("membershipCardHidden").value = currentMembershipCard;
 				
 				// Disable borrow button
@@ -413,7 +414,6 @@
 				
 				// Save to localStorage
 				saveToLocalStorage();
-				
 				updateSelectedBooksList();
 			}
 		}
@@ -506,6 +506,16 @@
 		
 		// Initialize the page when DOM is loaded
 		document.addEventListener("DOMContentLoaded", initializePage);
+
+		// Send request "return" with MembershipCard
+		document.querySelector("form#returnForm").addEventListener("submit", e => {
+			e.preventDefault();
+			const form = e.target;
+			form.querySelector("input#returnMembershipCardHidden").value
+					= document.getElementById("membershipCardInput").value;
+			console.log(form.querySelector("input#returnMembershipCardHidden").value);
+			form.submit();
+		})
 	</script>
 </body>
 </html>

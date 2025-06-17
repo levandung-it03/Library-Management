@@ -33,10 +33,6 @@
                             </span>
                         </div>
 
-                        <div class="form-group text-right">
-                            <a href="${pageContext.request.contextPath}/forgot-password">Quên mật khẩu</a>
-                        </div>
-
                         <button type="submit" class="btn btn-primary btn-block">Đăng Nhập</button>
                     </form>
 

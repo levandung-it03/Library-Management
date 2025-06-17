@@ -37,11 +37,11 @@ public class BorrowingRequestController {
             logger.handling(request, "BorrowingRequestController.renderBorrowingBook");
             borrowingRequestService.prepareBorrowingBook(request, page, query, membershipCard);
             logger.success(request, "`renderBorrowingBook` successfully");
+            return "book_borrowing";
         } catch (AppException e) {
             logger.error(request, "AppException: %s", e.getMessage());
-            request.setAttribute(ERROR.getMsg(), e.getMessage());
+            return "redirect:/borrowing-book?" + ERROR.getMsg() + "=" + APIHelper.encodeUrlMsg(e.getMessage());
         }
-        return "book_borrowing";
     }
 
     @PostMapping("/create-borrowing-request")
