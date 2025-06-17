@@ -18,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -62,7 +61,7 @@ public class GlobalLogger {
         log.info(mainMsg);
         try {
             logStorage.put(AppLog.builder()
-                .timeAsId(DateTimeHelper.localDateTimeToStr(LocalDateTime.now()))
+                .timeAsId(DateTimeHelper.localDateMilliTimeToStr(LocalDateTime.now()))
                 .groupId(currentGroupLogId.toString())
                 .type(type.toString())
                 .msg(String.format(message, args))
@@ -81,24 +80,33 @@ public class GlobalLogger {
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public ArrayList<AppLog> saveLogs(HttpServletRequest request, String testId) throws AppException {
+    public Map saveLogs(HttpServletRequest request, String testId) throws AppException {
         try {
+            if (Objects.isNull(request.getSession().getAttribute(GROUP_NAME)))
+                return Map.of(
+                    "rootLog", AppLog.builder().msg("Đã nhận tín hiệu log nhưng không có gì để lưu").build(),
+                    "logs", List.of()
+                );
             var currentGroupLogId = request.getSession().getAttribute(GROUP_NAME).toString();
             var logs = logStorage.getGroupById(currentGroupLogId);
-            if(logs.isEmpty()) {
-                log.info("[{}]_Logs is empty", Loggers.WEIRD);
-                return new ArrayList<>();
-            }
-            appLogRepository.saveAll(logs);
-            appTestLogRepository.save(AppTestLog.builder().groupId(currentGroupLogId).testId(testId).build());
+            if(Objects.isNull(logs) || logs.isEmpty())
+                return Map.of(
+                    "rootLog", AppLog.builder().msg("Đã nhận tín hiệu log nhưng không có gì để lưu").build(),
+                    "logs", List.of()
+                );
+            var savedLogs = appLogRepository.saveAll(logs);
+            var rootLog = appTestLogRepository.save(AppTestLog.builder().groupId(currentGroupLogId).testId(testId).build());
 
             log.info("[{}]_Logs saved at {}", Loggers.INFO, DateTimeHelper.localDateTimeToStr(LocalDateTime.now()));
             logStorage.clearGroup(currentGroupLogId);
-            return logs;
+            return Map.of(
+                "rootLog", rootLog,
+                "logs", savedLogs
+            );
         } catch (Exception e) {
             this.logErrorAndClearSession(request);
         }
-        return new ArrayList<>();
+        return Map.of();
     }
 
     private void logErrorAndClearSession(HttpServletRequest request) throws AppException {

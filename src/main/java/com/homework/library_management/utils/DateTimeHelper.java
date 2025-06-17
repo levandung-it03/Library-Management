@@ -13,6 +13,11 @@ public class DateTimeHelper {
         return sdf.format(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
     }
 
+    public static String localDateMilliTimeToStr(LocalDateTime localDateTime) {
+        var sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        return sdf.format(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+    }
+
     public static LocalDateTime strToLocalDateTime(String str) {
         try {
             var sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

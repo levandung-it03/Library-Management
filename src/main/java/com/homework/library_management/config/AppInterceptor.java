@@ -93,12 +93,12 @@ public class AppInterceptor implements HandlerInterceptor {
                                 @NonNull HttpServletResponse response,
                                 @NonNull Object handler, Exception ex) throws Exception {
         if (Objects.isNull(request.getSession().getAttribute(GlobalLogger.KEEP_LOGGING_NAME))) {
-            System.out.println("FULL LOGGING FROM GROUP_ID: "
-                + request.getSession().getAttribute(GlobalLogger.GROUP_NAME));
-            logStorage
-                .getGroupById(request.getSession().getAttribute(GlobalLogger.GROUP_NAME).toString())
-                .forEach(System.out::println);
-
+            Object savedGroupLogId = request.getSession().getAttribute(GlobalLogger.GROUP_NAME);
+            if (savedGroupLogId != null) {
+                System.out.println("FULL LOGGING FROM GROUP_ID: "
+                    + request.getSession().getAttribute(GlobalLogger.GROUP_NAME));
+                logStorage.getGroupById(savedGroupLogId.toString()).forEach(System.out::println);
+            }
         }
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }

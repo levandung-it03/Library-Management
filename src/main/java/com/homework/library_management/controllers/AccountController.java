@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,12 +26,12 @@ public class AccountController {
     GlobalLogger logger;
 
     @ResponseBody
-    @PostMapping("/save-log")
-    public ResponseEntity<Map> saveLog(HttpServletRequest request, @Valid @RequestBody DTO_ById dto) {
+    @GetMapping("/save-log")
+    public ResponseEntity<Map> saveLog(HttpServletRequest request, @Valid DTO_ById dto) {
         try {
             return ResponseEntity.ok(Map.of(
-                StatusMsgEnum.SUCCESS.getMsg(), "Lưu thành công các logs",
-                "logs", logger.saveLogs(request, dto.getId())));
+                StatusMsgEnum.SUCCESS.getMsg(), "Thao tác thành công",
+                "savedGroupLog", logger.saveLogs(request, dto.getId())));
         } catch (AppException e) {
             return ResponseEntity.badRequest().body(Map.of(StatusMsgEnum.ERROR.getMsg(), e.getMessage()));
         }
