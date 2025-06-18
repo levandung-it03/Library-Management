@@ -54,7 +54,7 @@ public class BorrowingRequestService {
         if (!membershipCard.isEmpty()) {
             if (!membershipCardRepository.existsById(membershipCard))
                 throw new AppException("Thẻ không tồn tại");
-            var allRequests = bookBorrowingReqRepo.findAllByBorrowingRequest_MembershipCard_MembershipCard(membershipCard);
+            var allRequests = bookBorrowingReqRepo.findAllByBorrowingRequestThatNotReturnByMembershipCard(membershipCard);
             if (allRequests.isEmpty())
                 throw new AppException("Mã này không nợ sách");
             var serializedBooks = new StringBuilder();

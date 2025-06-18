@@ -17,7 +17,12 @@ public interface BookBorrowingRequestRepository extends JpaRepository<BookBorrow
     """)
     Long countTotalBorrowedBooks();
 
-    List<BookBorrowingRequest> findAllByBorrowingRequest_MembershipCard_MembershipCard(String membershipCard);
+    @Query("""
+        SELECT bbr FROM BookBorrowingRequest bbr
+        WHERE bbr.borrowingRequest.membershipCard.membershipCard = :membershipCard
+        AND bbr.borrowingRequest.returningStatus = 0
+    """)
+    List<BookBorrowingRequest> findAllByBorrowingRequestThatNotReturnByMembershipCard(String membershipCard);
 
     @Query("""
         SELECT
