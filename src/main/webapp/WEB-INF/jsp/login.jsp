@@ -27,7 +27,7 @@
 
                         <div class="form-group position-relative">
                             <label for="password">Mật khẩu:</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <input type="password" class="form-control" id="password" name="password">
                             <span class="position-absolute" style="top: 38px; right: 15px; cursor: pointer;">
                                 <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
                             </span>

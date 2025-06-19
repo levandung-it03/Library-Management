@@ -111,7 +111,7 @@
 				<div class="mb-4">
 					<label class="block text-gray-700">Số lượng</label> <input
 						class="w-full p-2 border border-gray-300" type="number"
-						name="availableQuantity" placeholder="Số lượng" min="1" />
+						name="availableQuantity" placeholder="Số lượng" />
 				</div>
 
 				<!-- <div class="mb-4">
