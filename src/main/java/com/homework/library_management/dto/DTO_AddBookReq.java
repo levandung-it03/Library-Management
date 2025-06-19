@@ -1,6 +1,7 @@
 package com.homework.library_management.dto;
 
 import com.homework.library_management.dto.annotation.NotEmptyConstraint;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class DTO_AddBookReq {
 
     @NotNull(message = "Số lượng sách không hợp lệ_/manage-book")
     @Min(value = 1, message = "Số lượng sách không hợp lệ_/manage-book")
+    @Max(value = Integer.MAX_VALUE, message = "Số lượng sách không hợp lệ_/manage-book")
     Integer availableQuantity;
 
     @NotEmptyConstraint(message = "Mô tả không được rỗng, hoặc chỉ chứa khoảng trắng_/manage-book")
