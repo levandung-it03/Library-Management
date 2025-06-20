@@ -26,7 +26,6 @@ public class DTO_UpdateBookReq {
 
 	@NotNull(message = "Số lượng sách không hợp lệ_/manage-book")
     @Min(value = 1, message = "Số lượng sách không hợp lệ_/manage-book")
-    @Max(value = Integer.MAX_VALUE, message = "Số lượng sách không hợp lệ_/manage-book")
     Integer availableQuantity;
 
     @NotEmptyConstraint(message = "Mô tả không được rỗng, hoặc chỉ chứa khoảng trắng_/manage-book")
@@ -39,7 +38,7 @@ public class DTO_UpdateBookReq {
     @Max(value = 1, message = "Trạng thái sách không hợp lệ_/manage-book")
     Integer status;
 
-    @NotNull(message = "Thể loại không hợp lệ_/manage-book")
+    @NotNull(message = "Thể loại sách không được rỗng_/manage-book")
     @NotEmpty(message = "Thể loại không được bỏ trống_/manage-book")
     List<Long> genres;
 
