@@ -1,6 +1,8 @@
 package com.homework.library_management.repositories;
 
+import com.homework.library_management.dto.annotation.NotEmptyConstraint;
 import com.homework.library_management.entities.Book;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +28,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE b.bookName LIKE CONCAT('%', :bookName,'%') AND b.status = 1")
     Page<Book> findAllAvailableBooksByBookName(String bookName, Pageable pageable);
+
+    boolean existsByBookName(String bookName);
 }

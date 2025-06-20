@@ -91,16 +91,8 @@ public class BookService {
             .book(book).genre(genre).build()).toList());
     }
 
-    public void updateBook(HttpServletRequest request, DTO_UpdateBookReq dto) throws AppException {
-        try {
-            this.updateBookCore(request, dto);
-        } catch (DataIntegrityViolationException e) {
-            throw new AppException("Tên sách trùng tên với một cuốn khác");
-        }
-    }
-
     @Transactional(rollbackOn = RuntimeException.class)
-    public void updateBookCore(HttpServletRequest request, DTO_UpdateBookReq dto)
+    public void updateBook(HttpServletRequest request, DTO_UpdateBookReq dto)
         throws AppException, DataIntegrityViolationException {
         logger.handling(request, "BookService.updateBook");
 
@@ -115,6 +107,8 @@ public class BookService {
         if (bookBorrowingRequestRepository.existsByBookIdAndNotReturnYet(dto.getBookId()))
             throw new AppException("Sách này đang được mượn nên không thể cập nhật");
 
+        if (bookRepository.existsByBookName(dto.getBookName()))
+            throw new AppException("Tên sách trùng tên với một cuốn khác");
         updatedBook.setBookName(dto.getBookName());
         updatedBook.setAuthors(dto.getAuthors());
         updatedBook.setAvailableQuantity(dto.getAvailableQuantity());
