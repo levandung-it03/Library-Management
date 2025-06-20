@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class BookService {
     public void showDetailBook(HttpServletRequest request, Long id) throws AppException {
         logger.handling(request, "BookService.showDetailBook");
         var book = bookRepository.findById(id)
-            .orElseThrow(() -> new AppException("Không tìm thấy sách_/manage-book"));
+            .orElseThrow(() -> new AppException("Không tìm thấy sách"));
 
         var builtIdGenres = new StringBuilder();
         for (BookGenre bg: book.getBookGenres())
@@ -70,7 +71,7 @@ public class BookService {
         logger.handling(request, "BookService.addBook");
         var genres = genreRepository.findAllById(dto.getGenres());
         if (genres.size() != dto.getGenres().size())
-            throw new AppException("Thể loại không hợp lệ_/manage-book");
+            throw new AppException("Thể loại không hợp lệ");
 
         Book book;
         try {
@@ -82,40 +83,46 @@ public class BookService {
                 .authors(dto.getAuthors())
                 .status(1)
                 .build());
-        } catch (RuntimeException e) {
-            throw new AppException("Sách đã tồn tại_/manage-book");
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException("Sách đã tồn tại");
         }
 
         bookGenreRepository.saveAll(genres.stream().map(genre -> BookGenre.builder()
             .book(book).genre(genre).build()).toList());
     }
 
-    @Transactional(rollbackOn = RuntimeException.class)
     public void updateBook(HttpServletRequest request, DTO_UpdateBookReq dto) throws AppException {
-        logger.handling(request, "BookService.updateBook");
-        Book updatedBook = bookRepository.findById(dto.getBookId())
-            .orElseThrow(() -> new AppException("Sách không tồn tại_/manage-book"));
+        try {
+            this.updateBookCore(request, dto);
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException("Tên sách trùng tên với một cuốn khác");
+        }
+    }
 
-        if (bookBorrowingRequestRepository.existsByBookIdAndNotReturnYet(dto.getBookId()))
-            throw new AppException("Sách này đang được mượn nên không thể cập nhật_/manage-book");
+    @Transactional(rollbackOn = RuntimeException.class)
+    public void updateBookCore(HttpServletRequest request, DTO_UpdateBookReq dto)
+        throws AppException, DataIntegrityViolationException {
+        logger.handling(request, "BookService.updateBook");
 
         var newGenres = genreRepository.findAllById(dto.getGenres());
-        var newGenresMap = newGenres.stream().collect(Collectors.toMap(Genre::getGenreId, Function.identity()));
         if (newGenres.size() != dto.getGenres().size())
-            throw new AppException("Thể loại không hợp lệ_/manage-book");
+            throw new AppException("Thể loại không hợp lệ");
 
         Book newBook;
-        try {
-            updatedBook.setBookName(dto.getBookName());
-            updatedBook.setAuthors(dto.getAuthors());
-            updatedBook.setAvailableQuantity(dto.getAvailableQuantity());
-            updatedBook.setDescription(dto.getDescription());
-            updatedBook.setStatus(dto.getStatus());
-            newBook = bookRepository.save(updatedBook); //--"save" with an entity has "id" will update it.
-        } catch (RuntimeException e) {
-            throw new AppException("Tên sách trùng tên với một cuốn khác_/manage-book");
-        }
+        Book updatedBook = bookRepository.findById(dto.getBookId())
+            .orElseThrow(() -> new AppException("Sách không tồn tại"));
 
+        if (bookBorrowingRequestRepository.existsByBookIdAndNotReturnYet(dto.getBookId()))
+            throw new AppException("Sách này đang được mượn nên không thể cập nhật");
+
+        updatedBook.setBookName(dto.getBookName());
+        updatedBook.setAuthors(dto.getAuthors());
+        updatedBook.setAvailableQuantity(dto.getAvailableQuantity());
+        updatedBook.setDescription(dto.getDescription());
+        updatedBook.setStatus(dto.getStatus());
+        newBook = bookRepository.save(updatedBook); //--"save" with an entity has "id" will update it.
+
+        var newGenresMap = newGenres.stream().collect(Collectors.toMap(Genre::getGenreId, Function.identity()));
         //--Genre has been changed
         if (newBook.getBookGenres().size() != newGenres.size()
             || !newBook.getBookGenres().stream().allMatch(bg -> newGenresMap.containsKey(bg.getGenre().getGenreId()))) {

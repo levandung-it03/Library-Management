@@ -73,7 +73,7 @@ public class AppExcHandler {
 
     @ExceptionHandler(Exception.class)
     public String exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         logger.weird(request, "UnawareException: %s", ex.getMessage());
         return "error/500";
     }
