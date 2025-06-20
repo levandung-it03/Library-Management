@@ -109,6 +109,7 @@ public class BookService {
 
         if (bookRepository.existsByBookName(dto.getBookName()))
             throw new AppException("Tên sách trùng tên với một cuốn khác");
+
         updatedBook.setBookName(dto.getBookName());
         updatedBook.setAuthors(dto.getAuthors());
         updatedBook.setAvailableQuantity(dto.getAvailableQuantity());
@@ -117,16 +118,19 @@ public class BookService {
         newBook = bookRepository.save(updatedBook); //--"save" with an entity has "id" will update it.
 
         var newGenresMap = newGenres.stream().collect(Collectors.toMap(Genre::getGenreId, Function.identity()));
-        //--Genre has been changed
         if (newBook.getBookGenres().size() != newGenres.size()
             || !newBook.getBookGenres().stream().allMatch(bg -> newGenresMap.containsKey(bg.getGenre().getGenreId()))) {
-            //--This
-            bookGenreRepository.deleteAllInBatch(newBook.getBookGenres());
-            bookGenreRepository.flush();    //--Actually call .remove() (SQL).
-            newBook.getBookGenres().clear();    //--Clear old relationship in Parent-Entity (Book).
-            bookGenreRepository.saveAll(newGenres.stream()
+
+            bookGenreRepository.deleteAll(newBook.getBookGenres()); // <-- KHÔNG dùng deleteAllInBatch
+            newBook.getBookGenres().clear(); // <-- dọn sạch quan hệ trong entity
+
+            // Gắn lại các thể loại mới
+            var newBookGenres = newGenres.stream()
                 .map(genre -> BookGenre.builder().book(newBook).genre(genre).build())
-                .toList());
+                .toList();
+
+            bookGenreRepository.saveAll(newBookGenres);
+            newBook.getBookGenres().addAll(newBookGenres); // <-- cập nhật lại trong Book entity
         }
     }
 }
